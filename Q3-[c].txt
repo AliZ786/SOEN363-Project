@@ -1,0 +1,6 @@
+SELECT DISTINCT G.genre, COUNT(M.mid)
+FROM public."Movies" M, public."Genres" G
+WHERE M.mid=G.mid
+GROUP BY G.genre
+HAVING COUNT(M.mid) > 1000
+ORDER BY COUNT(M.mid) ASC
