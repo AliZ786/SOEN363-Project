@@ -1,0 +1,37 @@
+-- i
+CREATE VIEW high_ratings
+AS
+SELECT DISTINCT A.actor_name
+FROM public."Actors" A, public."Movies" M
+WHERE A.mid=M.mid and M.rating >= 4;
+
+SELECT COUNT(H.actor_name)
+FROM high_ratings H;
+
+CREATE VIEW low_ratings
+AS
+SELECT DISTINCT A.actor_name
+FROM public."Actors" A, public."Movies" M
+WHERE A.mid=M.mid and M.rating < 4;
+
+SELECT COUNT(L.actor_name)
+FROM low_ratings L;
+
+-- ii
+SELECT H.actor_name
+    FROM high_ratings H
+    LEFT JOIN low_ratings L ON H.actor_name=L.actor_name
+    WHERE L.actor_name IS NULL;
+
+-- iii
+SELECT H.actor_name, COUNT(M.mid)
+FROM high_ratings H, public."Movies" M, public."Actors" A
+WHERE H.actor_name IN (
+    SELECT H.actor_name
+    FROM high_ratings H
+    LEFT JOIN low_ratings L ON H.actor_name=L.actor_name
+    WHERE L.actor_name IS NULL) and H.actor_name=A.actor_name and A.mid=M.mid
+GROUP BY H.actor_name
+ORDER BY COUNT(M.mid) DESC
+LIMIT 10;
+

@@ -1,0 +1,5 @@
+SELECT A.actor_name
+FROM public."Actors" A, public."Actors" A2, public."Movies" M, public."Movies" M2
+WHERE A.mid=M.mid and A2.mid=M2.mid and M.mid <> M2.mid and A.actor_name=A2.actor_name
+ORDER BY age(M.year, M2.year) DESC
+LIMIT 1;
