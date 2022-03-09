@@ -1,0 +1,30 @@
+-- 1
+CREATE VIEW co_actors AS
+    SELECT A2.actor_name, M.mid
+    FROM public."Actors" A, public."Actors" A2, public."Movies" M
+    WHERE A.actor_name='Annette Nicole' and A.mid=M.mid and A2.mid=M.mid and A.actor_name<>A2.actor_name;
+
+SELECT COUNT(*) FROM co_actors;
+
+-- 2
+CREATE VIEW all_combinations AS
+    SELECT C.actor_name, M.mid
+    FROM co_actors C, public."Movies" M, public."Actors" A
+    WHERE A.actor_name='Annette Nicole' and A.mid=M.mid;
+
+SELECT COUNT(*) FROM all_combinations;
+
+-- 3
+CREATE VIEW non_existent AS
+SELECT A.actor_name, A.mid
+FROM all_combinations A
+LEFT JOIN co_actors C ON (A.actor_name=C.actor_name and A.mid=C.mid)
+WHERE C.actor_name IS NULL and C.mid IS NULL;
+
+SELECT COUNT(*) FROM non_existent;
+
+-- 4
+SELECT DISTINCT A.actor_name
+FROM co_actors A
+LEFT JOIN non_existent N ON A.actor_name=N.actor_name
+WHERE N.actor_name IS NULL;
