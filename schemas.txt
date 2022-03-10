@@ -1,0 +1,29 @@
+create table Movies (
+	mid int,
+	title varchar,
+	year date,
+	rating real,
+	num_ratings int,
+	primary key (mid)
+);
+create table Actors (
+	mid int,
+	name varchar,
+	cast_position int,
+	primary key (mid, name)
+);
+create table Genres (
+	mid int,
+	genre varchar,
+	primary key (mid, genre)
+);
+create table Tags (
+	mid int,
+	tid int,
+	primary key (mid, tid)
+);
+create table Tag_Names (
+	tid int,
+	tag varchar,
+	primary key (tid)
+);
