@@ -1,0 +1,19 @@
+-- 1
+SELECT COUNT(DISTINCT A.actor_name)
+FROM public."Actors" A, public."Actors" A2
+WHERE A2.actor_name='Tom Cruise' and A2.mid=A.mid and A2.actor_name<>A.actor_name;
+
+-- 2
+CREATE VIEW social_actor AS
+SELECT A2.actor_name, COUNT(DISTINCT A.actor_name)
+FROM public."Actors" A, public."Actors" A2
+WHERE A2.mid=A.mid and A2.actor_name<>A.actor_name
+GROUP BY A2.actor_name
+ORDER BY COUNT(DISTINCT A.actor_name) DESC, A2.actor_name ASC
+FETCH FIRST 1 ROWS WITH TIES;
+
+SELECT * FROM social_actor;
+
+
+
+
