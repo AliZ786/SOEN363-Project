@@ -1,0 +1,23 @@
+SELECT M.year, M.title, M.rating
+FROM public."Movies" M
+WHERE (M.year, M.rating) IN
+    (
+        SELECT L.year, MIN(L.rating)
+        FROM public."Movies" L
+        WHERE L.year >= '2005-01-01' and L.year <= '2011-01-01' and L.num_ratings > 0
+        GROUP BY L.year
+    )
+UNION
+SELECT M.year, M.title, M.rating
+FROM public."Movies" M
+WHERE (M.year, M.rating) IN
+    (
+        SELECT H.year, MAX(H.rating)
+        FROM public."Movies" H
+        WHERE H.year >= '2005-01-01' and H.year <= '2011-01-01' and H.num_ratings > 0
+        GROUP BY H.year
+    )
+ORDER BY year ASC, rating ASC
+
+
+
