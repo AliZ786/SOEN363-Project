@@ -1,0 +1,67 @@
+--actors ratio view
+create view common_actors_ratio
+as
+select movies.mid, cast(count(A1.name)as decimal) / cast((select count(A.name) from actors as A, movies as M where M.title = 'Mr. & Mrs. Smith' and A.mid = M.mid)as decimal) as actorsRatio 
+from movies, actors as A1
+where A1.mid = movies.mid
+and A1.name = any 	(select A2.name
+			from actors as A2, movies as M
+			where M.title = 'Mr. & Mrs. Smith' and A2.mid = M.mid)
+group by movies.mid;
+
+-- tags ratio view
+create view common_tags_ratio
+as
+select movies.mid, cast(count(T1.tid)as decimal) / cast((select count(T.tid) from tags as T, movies as M where M.title = 'Mr. & Mrs. Smith' and T.mid = M.mid)as decimal) as tagsRatio 
+from movies, tags as T1
+where T1.mid = movies.mid
+and T1.tid = any (select T2.tid
+					from tags as T2, movies as M
+					where M.title = 'Mr. & Mrs. Smith' and T2.mid = M.mid
+				  )
+group by movies.mid;
+
+-- genres ratio view
+create view common_genres_ratio
+as
+select movies.mid, cast(count(G1.genre)as decimal) / cast((select count(G.genre) from genres as G, movies as M where M.title = 'Mr. & Mrs. Smith' and G.mid = M.mid)as decimal) as genresRatio 
+from movies, genres as G1
+where G1.mid = movies.mid
+and G1.genre = any (select G2.genre
+					from genres as G2, movies as M
+					where M.title = 'Mr. & Mrs. Smith' and G2.mid = M.mid
+				  )
+group by movies.mid;
+
+-- age gap view
+create view ageGap
+as
+select M1.mid, abs(cast((extract(year from M1.year))as decimal) - cast((select (extract(year from M.year)) from movies as M where M.title = 'Mr. & Mrs. Smith' limit 1)as decimal)) as age_gap 
+from movies M1
+group by M1.mid;
+
+
+-- rating gap view
+create view ratingGap
+as
+select movies.mid, abs(cast (movies.rating as decimal) - cast((select movies.rating from movies where movies.title='Mr. & Mrs. Smith' limit 1)as decimal)) as rating_gap 
+from movies;
+
+
+
+
+
+-- function to calculate similarity percentage ->((r1+r2+r3+r4+r5)/5)*100
+create function similarity(decimal, decimal, decimal, decimal, decimal) returns integer
+as 'select (($1+$2+$3+$4+$5)/5)*100;'
+language sql
+immutable
+returns null on null input;
+
+
+--query
+select movies.title, similarity(common_actors_ratio.actorsRatio, common_genres_ratio.genresRatio, common_tags_ratio.tagsRatio,ageGap.age_gap, ratingGap.rating_gap)as sim
+from movies, common_actors_ratio, common_genres_ratio, common_tags_ratio, ageGap, ratingGap
+group by movies.title, common_actors_ratio.actorsRatio, common_genres_ratio.genresRatio, common_tags_ratio.tagsRatio, ageGap.age_gap, ratingGap.rating_gap
+order by sim desc
+limit 10
