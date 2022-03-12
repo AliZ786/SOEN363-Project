@@ -1,5 +1,5 @@
-SELECT DISTINCT M.title
+SELECT M.title
 FROM public."Movies" M, public."Tags" T, public."Tag_Names" K
-WHERE (M.title IN (SELECT DISTINCT M.title
+WHERE (M.title IN (SELECT M.title
 					FROM public."Movies" M, public."Tags" T, public."Tag_Names" K
 					WHERE M.mid=T.mid and T.tid=K.tid and K.tag LIKE '%bad%') and M.mid=T.mid and T.tid=K.tid and K.tag LIKE '%good%')
