@@ -1,0 +1,4 @@
+SELECT DISTINCT M.title, M.release_year, M.rating
+FROM public."Movies" M
+WHERE M.rating IS NOT NULL
+ORDER BY M.release_year ASC, M.rating DESC
