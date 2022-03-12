@@ -1,0 +1,15 @@
+-- for displaying a list of all tables
+
+select table_name
+from information_schema.tables
+where table_schema = 'public' and table_type='BASE TABLE'
+order by table_name
+
+
+-- theory/examples for determining if a table contains duplicates
+
+select (count(*) <> count(distinct movies.title)) as has_duplicates
+from movies;
+
+select (count(*) <> count(distinct actors.mid)) as has_duplicates
+from actors;

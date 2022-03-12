@@ -1,0 +1,63 @@
+--i
+select *
+from movies
+where movies.num_ratings IN 
+(select max(M.num_ratings) 
+from movies as M)
+
+-- ii
+select *
+from movies
+where movies.rating IN 
+(select max(M.rating) 
+from movies as M)
+order by movies.mid asc
+
+--iii (using views, not sure if we are supposed to)
+create view highest_num_ratings
+as
+select *
+from movies
+where movies.num_ratings IN 
+(select max(M.num_ratings) 
+from movies as M);
+
+create view highest_ratings
+as
+select *
+from movies
+where movies.rating IN 
+(select max(M.rating) 
+from movies as M);
+
+select *
+from highest_num_ratings
+inner join highest_ratings on highest_num_ratings.mid=highest_ratings.mid;
+
+--iv
+select *
+from movies
+where movies.rating IN 
+(select min(M.rating) 
+from movies as M
+where M.rating is not null)
+order by movies.mid asc
+
+--v (again using views, assuming the view highest_num_ratings is already created from (iii)
+
+create view lowest_ratings
+as
+select *
+from movies
+where movies.rating IN 
+(select min(M.rating) 
+from movies as M
+where M.rating is not null)
+order by movies.mid asc;
+
+select *
+from highest_num_ratings
+inner join lowest_ratings on highest_num_ratings.mid=lowest_ratings.mid;
+
+--vi
+-- In conclusion, it is not. There are no movies that have both the highest number of ratings and the highest ratings and there are also no movies that have both the highest number of ratings and the lowest ratings. We know this by using an inner join, or in other words revealing what is in the intersection of both sets. In both of these cases, the intersection in empty.
