@@ -1,4 +1,4 @@
-SELECT DISTINCT A.actor_name
+SELECT A.actor_name
 FROM public."Movies" M, public."Actors" A
 WHERE (M.mid=A.mid AND M.title='The Dark Knight')
 ORDER by A.actor_name ASC
