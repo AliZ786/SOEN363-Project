@@ -1,4 +1,4 @@
-CREATE TABLE movies (
+CREATE TABLE Movies (
 mid INT UNIQUE NOT NULL,
 title VARCHAR(250),
 year DATE,
@@ -7,33 +7,33 @@ num_ratings INT,
 PRIMARY KEY (mid)
 );
 
-CREATE TABLE actors (
+CREATE TABLE Actors (
 mid INT,
-name VARCHAR(50),
+actor_name VARCHAR(50),
 cast_position INT,
-FOREIGN KEY (mid) REFERENCES movies(mid),
+FOREIGN KEY (mid) REFERENCES Movies(mid),
 PRIMARY KEY (mid, name)
 );
 
-CREATE TABLE genres (
+CREATE TABLE Genres (
 mid INT,
 genre VARCHAR(50),
-FOREIGN KEY (mid) REFERENCES movies(mid),
+FOREIGN KEY (mid) REFERENCES Movies(mid),
 PRIMARY KEY (mid, genre)
 );
 
-CREATE TABLE tag_names (
+CREATE TABLE Tag_Names (
 tid INT UNIQUE NOT NULL,
 tag VARCHAR(50),
 PRIMARY KEY (tid)
 );
 
 
-CREATE TABLE tags (
+CREATE TABLE Tags (
 mid INT,
 tid INT,
-FOREIGN KEY (mid) REFERENCES movies(mid),
-FOREIGN KEY (tid) REFERENCES tag_names(tid),
+FOREIGN KEY (mid) REFERENCES Movies(mid),
+FOREIGN KEY (tid) REFERENCES Tag_Names(tid),
 PRIMARY KEY (mid, tid)
 );
 
