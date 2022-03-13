@@ -1,7 +1,8 @@
 -- 1
-SELECT COUNT(DISTINCT A.actor_name)
+SELECT A2.actor_name, COUNT(DISTINCT A.actor_name)
 FROM Actors A, Actors A2
-WHERE A2.actor_name='Tom Cruise' and A2.mid=A.mid and A2.actor_name<>A.actor_name;
+WHERE A2.actor_name='Tom Cruise' and A2.mid=A.mid and A2.actor_name<>A.actor_name
+GROUP BY A2.actor_name;
 
 -- 2
 CREATE VIEW social_actor AS
