@@ -1,4 +1,3 @@
-SELECT DISTINCT M.title, M.year, M.rating
+SELECT M.title, M.year, M.rating
 FROM Movies M
-WHERE M.rating IS NOT NULL
-ORDER BY M.year ASC, M.rating DESC
+ORDER BY M.year, M.rating DESC
