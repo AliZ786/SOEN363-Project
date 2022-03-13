@@ -1,161 +1,153 @@
+--- Question 4b2 --- 
+
 -- Actors that are in the movie 'Mr. & Mrs. Smith'
-CREATE VIEW actors_in_movie AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_actors_in_movie AS
     SELECT DISTINCT A.actor_name as movie_actors
     FROM Movies M, Actors A
     WHERE M.title='Mr. & Mrs. Smith' and M.mid=A.mid;
-
--- Execution time: 37 ms
-
+	
+-- Execution time: 26 ms
 
 -- Counting the number of distinct common actors with other movies
-CREATE VIEW common_actors AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_common_actors AS
     SELECT M2.mid as movie_id, COUNT(DISTINCT A2.actor_name) as number_of_common_actors
     FROM Movies M2, Actors A2
-    WHERE actor_name IN (SELECT movie_actors FROM actors_in_movie)
+    WHERE actor_name IN (SELECT movie_actors FROM mw_actors_in_movie)
                     and M2.mid=A2.mid and M2.title<>'Mr. & Mrs. Smith'
     GROUP BY M2.mid;
 
--- Execution time: 67 ms
-
+-- Execution time: 53 ms
 
 -- Calculation of the fraction of common actors
-CREATE VIEW fraction_common_actors AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_fraction_common_actors AS
     SELECT movie_id, ((max(number_of_common_actors) * 1.0) / (COUNT(movie_actors) * 1.0)) as fraction_actors
-    FROM common_actors, actors_in_movie
+    FROM mw_common_actors, mw_actors_in_movie
     GROUP BY movie_id;
-
--- Execution time: 34 ms
-
+	
+-- Execution time: 31 ms	
 
 -- Tags that are used for the movie 'Mr. & Mrs. Smith'
-CREATE VIEW tags_for_movie AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_tags_for_movie AS
     SELECT DISTINCT T.tid as movie_tags
     FROM Movies M, Tags T
     WHERE M.title='Mr. & Mrs. Smith' and M.mid=T.mid;
 
--- Execution time: 38 ms
-
+-- Execution time: 31 ms
 
 -- Counting the number of distinct common tags with other movies
-CREATE VIEW common_tags AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_common_tags AS
     SELECT M2.mid as movie_id, COUNT(DISTINCT T2.tid) as number_of_common_tags
     FROM Movies M2, Tags T2
     WHERE tid IN (
-        SELECT movie_tags FROM tags_for_movie)
+        SELECT movie_tags FROM mw_tags_for_movie)
         and M2.mid = T2.mid and M2.title<>'Mr. & Mrs. Smith'
     GROUP BY M2.mid;
 
--- Execution time: 41 ms
-   
+-- Execution time: 32 ms
 
 -- Calculation of the fraction of common tags
-CREATE VIEW fraction_common_tags AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_fraction_common_tags AS
     SELECT movie_id, ((max(number_of_common_tags) * 1.0) / (COUNT(movie_tags) * 1.0)) as fraction_tags
-    FROM common_tags, tags_for_movie
+    FROM mw_common_tags, mw_tags_for_movie
     GROUP BY movie_id;
 
--- Execution time: 33 ms
-
+-- Execution time: 31 ms
 
 -- Genres for the movie 'Mr. & Mrs. Smith'
-CREATE VIEW genres_for_movie AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_genres_for_movie AS
     SELECT DISTINCT G.genre as movie_genres
     FROM Movies M, Genres G
     WHERE M.title='Mr. & Mrs. Smith' and M.mid=G.mid;
 
--- Execution time: 34 ms
-
+-- Execution time: 28 ms
 
 -- Counting the number of distinct common genres with other movies
-CREATE VIEW common_genres AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_common_genres AS
     SELECT M2.mid as movie_id, COUNT(DISTINCT G2.genre) as number_of_common_genres
     FROM Movies M2, Genres G2
     WHERE genre IN (
-        SELECT movie_genres FROM genres_for_movie)
+        SELECT movie_genres FROM mw_genres_for_movie)
         and M2.mid = G2.mid and M2.title<>'Mr. & Mrs. Smith'
     GROUP BY M2.mid;
 
--- Execution time: 82 ms
-
+-- Execution time: 68 ms
 
 -- Calculation of the fraction of common genres
-CREATE VIEW fraction_common_genres AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_fraction_common_genres AS
     SELECT movie_id, (MAX(number_of_common_genres) * 1.0 / COUNT(movie_genres) * 1.0) as fraction_genres
-    FROM genres_for_movie, common_genres
+    FROM mw_genres_for_movie, mw_common_genres
     GROUP BY movie_id;
 
--- Execution time: 55 ms
-
+-- Execution time: 43 ms
 
 -- Max age gap with movie 'Mr. & Mrs. Smith'
-CREATE VIEW max_age_gap(max_gap) AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_max_age_gap(max_gap) AS
     SELECT EXTRACT('year' FROM AGE(M.year, M2.year))
     FROM Movies M, Movies M2
     WHERE M.title='Mr. & Mrs. Smith' and M.mid<>M2.mid
     ORDER BY AGE(M.year, M2.year) DESC
     LIMIT 1;
 
--- Execution time: 53 ms
-
+-- Execution time: 46 ms
 
 -- Release year of the movie 'Mr. & Mrs. Smith'
-CREATE VIEW mr_mrs_year(release_year) AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_mr_mrs_year(release_year) AS
     SELECT DISTINCT EXTRACT('year' FROM M.year)
     FROM Movies M
     WHERE M.title='Mr. & Mrs. Smith';
 
--- Execution time: 36 ms
-
+-- Execution time: 29 ms
 
 -- Normalized age gap between movies and 'Mr. & Mrs. Smith'
-CREATE VIEW normalized_age AS
-    SELECT M2.mid, (((SELECT max_gap FROM max_age_gap) - ABS((SELECT release_year FROM mr_mrs_year) - EXTRACT('year' FROM M2.year)))
-                          /(SELECT max_gap FROM max_age_gap)) as normalized_age_gap
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_normalized_age AS
+    SELECT M2.mid, (((SELECT max_gap FROM mw_max_age_gap) - ABS((SELECT release_year FROM mw_mr_mrs_year) - EXTRACT('year' FROM M2.year)))
+                          /(SELECT max_gap FROM mw_max_age_gap)) as normalized_age_gap
     FROM Movies M, Movies M2
     WHERE M.title='Mr. & Mrs. Smith' and M.title<>M2.title;
 
--- Execution time: 63 ms
+-- Execution time: 59 ms
 
 
 -- Max rating gap with the movie 'Mr. & Mrs. Smith'
-CREATE VIEW max_rating_gap(rating_gap) AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_max_rating_gap(rating_gap) AS
 SELECT (M.rating - (SELECT MIN(M1.rating) FROM Movies M1)) as rating_gap
     FROM Movies M, Movies M2
     WHERE M.title='Mr. & Mrs. Smith' and M.mid<>M2.mid
     ORDER BY (ABS(M.rating - M2.rating)) DESC
     LIMIT 1;
-
--- Execution time: 31 ms
+	
+-- Execution time: 33 ms
 
 
 -- Rating of the movie 'Mr. & Mrs. Smith'
-CREATE VIEW mr_mrs_rating(movie_rating) AS
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_mr_mrs_rating(movie_rating) AS
     SELECT DISTINCT M.rating
     FROM Movies M
     WHERE M.title='Mr. & Mrs. Smith';
 
--- Execution time: 51 ms
+-- Execution time: 29 ms
 
 
 -- Normalized rating gap between movies and 'Mr. & Mrs. Smith'
-CREATE VIEW normalized_rating AS
-    SELECT M2.mid, (((SELECT rating_gap FROM max_rating_gap) - ABS((SELECT movie_rating FROM mr_mrs_rating) - (SELECT M2.rating)))
-                         /(SELECT rating_gap FROM max_rating_gap)) as normalized_rating_gap
+CREATE MATERIALIZED VIEW IF NOT EXISTS mw_normalized_rating AS
+    SELECT M2.mid, (((SELECT rating_gap FROM mw_max_rating_gap) - ABS((SELECT movie_rating FROM mw_mr_mrs_rating) - (SELECT M2.rating)))
+                         /(SELECT rating_gap FROM mw_max_rating_gap)) as normalized_rating_gap
     FROM Movies M, Movies M2
     WHERE M.title='Mr. & Mrs. Smith' and M.mid<>M2.mid;
+
+-- Execution time: 45 ms
 
 -- Query that calculates the similarity %, displays it with the title of the movie and its rating, and shows the top 10 in descending order
 SELECT M.title, M.rating, ROUND(CAST((((MAX(FA.fraction_actors + FT.fraction_tags + FG.fraction_genres
                                 + NA.normalized_age_gap + NR.normalized_rating_gap))/5)*100) AS DECIMAL), 2) AS recommendation
-FROM normalized_age NA
-INNER JOIN fraction_common_actors FA ON FA.movie_id=NA.mid
-INNER JOIN fraction_common_tags FT ON FT.movie_id=FA.movie_id
-INNER JOIN fraction_common_genres FG ON FG.movie_id=FT.movie_id
-INNER JOIN normalized_rating NR ON NR.mid=FG.movie_id
+FROM mw_normalized_age NA
+INNER JOIN mw_fraction_common_actors FA ON FA.movie_id=NA.mid
+INNER JOIN mw_fraction_common_tags FT ON FT.movie_id=FA.movie_id
+INNER JOIN mw_fraction_common_genres FG ON FG.movie_id=FT.movie_id
+INNER JOIN mw_normalized_rating NR ON NR.mid=FG.movie_id
 INNER JOIN Movies M on NA.mid = M.mid
 GROUP BY M.mid
 ORDER BY recommendation DESC
 LIMIT 10;
 
--- Execution time: 61 ms
-
+-- Execution time: 44 ms
