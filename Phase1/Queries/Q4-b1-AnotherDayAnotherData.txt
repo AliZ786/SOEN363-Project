@@ -1,0 +1,33 @@
+--- Question 4b1 ---
+
+
+EXPLAIN ANALYZE SELECT * FROM view_movies;
+EXPLAIN ANALYZE SELECT * FROM Movies;
+
+-- With materialized view index - Execution time : 0.710ms
+-- with no index - Execution time :0.720ms
+
+EXPLAIN ANALYZE SELECT * FROM view_actors;
+EXPLAIN ANALYZE SELECT * FROM Actors;
+
+-- With materialized view index - Execution time : 15.501ms
+-- with no index - Execution time :15.774ms
+
+EXPLAIN ANALYZE SELECT * FROM view_genres;
+EXPLAIN ANALYZE SELECT * FROM Genres;
+
+-- With materialized view index - Execution time : 1.454ms
+-- with no index - Execution time :1.538ms
+
+
+EXPLAIN ANALYZE SELECT * FROM view_tag_names;
+EXPLAIN ANALYZE SELECT * FROM Tag_Names;
+
+-- With materialized view index - Execution time : 0.916ms
+-- with no index - Execution time :0.941ms
+
+EXPLAIN ANALYZE SELECT * FROM view_tags;
+EXPLAIN ANALYZE SELECT * FROM Tags;
+
+-- With materialized view index - Execution time : 3.696ms
+-- with no index - Execution time :4.069ms
