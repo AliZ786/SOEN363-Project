@@ -1,7 +1,7 @@
 -- 1
 CREATE VIEW co_actors AS
     SELECT A2.actor_name, M.mid
-    FROM public."Actors" A, public."Actors" A2, public."Movies" M
+    FROM Actors A,Actors A2, Movies M
     WHERE A.actor_name='Annette Nicole' and A.mid=M.mid and A2.mid=M.mid and A.actor_name<>A2.actor_name;
 
 SELECT COUNT(*) FROM co_actors;
@@ -9,7 +9,7 @@ SELECT COUNT(*) FROM co_actors;
 -- 2
 CREATE VIEW all_combinations AS
     SELECT C.actor_name, M.mid
-    FROM co_actors C, public."Movies" M, public."Actors" A
+    FROM co_actors C, Movies M, Actors A
     WHERE A.actor_name='Annette Nicole' and A.mid=M.mid;
 
 SELECT COUNT(*) FROM all_combinations;
