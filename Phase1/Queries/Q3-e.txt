@@ -1,5 +1,6 @@
 SELECT M.title
 FROM Movies M, Tags T, Tag_Names K
-WHERE (M.title IN (SELECT M.title
+WHERE (M.mid IN (SELECT M.mid
 					FROM Movies M, Tags T, Tag_Names K
-					WHERE M.mid=T.mid and T.tid=K.tid and K.tag LIKE '%bad%') and M.mid=T.mid and T.tid=K.tid and K.tag LIKE '%good%')
+					WHERE M.mid=T.mid and T.tid=K.tid and K.tag LIKE '%bad%' and K.tag NOT LIKE '%good%') and M.mid=T.mid and T.tid=K.tid and K.tag LIKE '%good%')
+					GROUP BY M.title HAVING COUNT(M.title) >=1;
