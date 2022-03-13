@@ -1,15 +1,114 @@
--- for displaying a list of all tables
+--if Movies has duplicates
+SELECT m.title, m.year, m.rating, m.num_ratings, COUNT(*)
+FROM Movies m
+GROUP BY m.title, m.year, m.rating, m.num_ratings
+HAVING COUNT(*) > 1;
 
-select table_name
-from information_schema.tables
-where table_schema = 'public' and table_type='BASE TABLE'
-order by table_name
+
+--View for Movies without any duplicates
+CREATE VIEW movies_no_duplicates
+AS
+SELECT *
+FROM Movies m
+WHERE m.mid IN (SELECT min(m.mid)
+    FROM Movies m
+    GROUP BY m.title, m.year, m.rating, m.num_ratings);
 
 
--- theory/examples for determining if a table contains duplicates
 
-select (count(*) <> count(distinct movies.title)) as has_duplicates
-from movies;
 
-select (count(*) <> count(distinct actors.mid)) as has_duplicates
-from actors;
+
+--if Actors has duplicates
+SELECT a.actor_name, a.cast_position, COUNT(*)
+FROM Actors a, Movies m, movies_no_duplicates nm
+WHERE a.mid = m.mid AND m.title = nm.title AND m.year = nm.year AND m.rating = nm.rating AND m.num_ratings = nm.rating
+GROUP BY a.actor_name, a.cast_position, nm.title, nm.year, nm.rating, nm.num_ratings
+HAVING COUNT(*) > 1;
+
+
+--View for Actors without any duplicates
+CREATE VIEW actors_no_duplicates
+AS
+SELECT a.mid, a.actor_name, a.cast_position
+FROM Actors a
+WHERE a.mid IN (SELECT min(a.mid)
+FROM Actors a, movies_no_duplicates nm, Movies m
+WHERE a.mid = m.mid AND m.title = nm.title AND m.year = nm.year AND m.rating = nm.rating AND m.num_ratings = nm.rating
+GROUP BY a.actor_name, a.cast_position, nm.title, nm.year, nm.rating, nm.num_ratings)
+AND a.actor_name IN (SELECT a.actor_name
+FROM Actors a, movies_no_duplicates nm, Movies m
+WHERE a.mid = m.mid AND m.title = nm.title AND m.year = nm.year AND m.rating = nm.rating AND m.num_ratings = nm.rating
+GROUP BY a.actor_name, a.cast_position, nm.title, nm.year, nm.rating, nm.num_ratings);
+
+
+
+
+
+--if Genres has duplicates
+SELECT g.genre, COUNT(*)
+FROM Genres g, Movies m, movies_no_duplicates nm
+WHERE g.mid = m.mid AND m.title = nm.title AND m.year = nm.year AND m.rating = nm.rating AND m.num_ratings = nm.rating
+GROUP BY g.genre, nm.title, nm.year, nm.rating, nm.num_ratings
+HAVING COUNT(*) > 1;
+
+
+--View for Genres without any duplicates
+CREATE VIEW genres_no_duplicates
+AS
+SELECT g.mid, g.genre
+FROM Genres g
+WHERE g.mid IN (SELECT min(g1.mid)
+FROM Genres g1, movies_no_duplicates nm, Movies m
+WHERE g1.mid = m.mid AND m.title = nm.title AND m.year = nm.year AND m.rating = nm.rating AND m.num_ratings = nm.rating
+GROUP BY g1.genre, nm.title, nm.year, nm.rating, nm.num_ratings)
+AND g.genre IN (SELECT g1.genre
+FROM Genres g1, movies_no_duplicates nm, Movies m
+WHERE g1.mid = m.mid AND m.title = nm.title AND m.year = nm.year AND m.rating = nm.rating AND m.num_ratings = nm.rating
+GROUP BY g1.genre, nm.title, nm.year, nm.rating, nm.num_ratings);
+
+
+
+
+
+--if Tag_names has duplicates
+SELECT tn.tag, tn.tid, COUNT(*)
+FROM Tag_names tn
+GROUP BY tn.tag, tn.tid
+HAVING COUNT(*) > 1;
+
+
+--View for Tag_names without any duplicates
+CREATE VIEW tag_names_no_duplicates
+AS
+SELECT *
+FROM Tag_names tn
+WHERE tn.tid IN (SELECT min(tn1.tid)
+    FROM Tag_names tn1
+    GROUP BY tn1.tid, tn1.tag);
+
+
+
+
+
+--if Tags has duplicates
+--assuming that there are no duplicates in tag_names which was actually proven by the previous query for our current dataset
+SELECT t.tid, COUNT(*)
+FROM Tags t, Tag_names tn, Movies m, movies_no_duplicates nm
+WHERE t.mid = m.mid AND m.title = nm.title AND m.year = nm.year AND m.rating = nm.rating AND m.num_ratings = nm.rating
+AND t.tid = tn.tid
+GROUP BY t.tid, nm.title, nm.year, nm.rating, nm.num_ratings
+HAVING COUNT(*) > 1;
+
+
+--View for Tags without any duplicates
+CREATE VIEW Tags_no_duplicates
+AS
+SELECT t.mid, t.tid
+FROM Tags t
+WHERE t.mid IN (SELECT min(t1.mid)
+FROM Tags t1, movies_no_duplicates nm, Movies m
+WHERE t1.mid = m.mid AND m.title = nm.title AND m.year = nm.year AND m.rating = nm.rating AND m.num_ratings = nm.rating
+GROUP BY t1.tid, nm.title, nm.year, nm.rating, nm.num_ratings) AND t.tid IN (SELECT min(t1.tid)
+FROM Tags t1, movies_no_duplicates nm, Movies m
+WHERE t1.mid = m.mid AND m.title = nm.title AND m.year = nm.year AND m.rating = nm.rating AND m.num_ratings = nm.rating
+GROUP BY t1.tid, nm.title, nm.year, nm.rating, nm.num_ratings);
