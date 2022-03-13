@@ -1,0 +1,17 @@
+--- Question 4a2 ---
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS view_social_actor AS
+SELECT A2.actor_name, COUNT(DISTINCT A.actor_name)
+FROM Actors A, Actors A2
+WHERE A2.mid=A.mid and A2.actor_name<>A.actor_name
+GROUP BY A2.actor_name
+ORDER BY COUNT(DISTINCT A.actor_name) DESC, A2.actor_name ASC
+FETCH FIRST 1 ROWS WITH TIES;
+
+SELECT * FROM view_social_actor;
+
+
+--- QUERY EXECUTION TIME ---
+-- view_social_actor: 12118 ms
+-- select execution time : 30 ms
+

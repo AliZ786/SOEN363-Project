@@ -1,4 +1,4 @@
---- Question 4a ---
+--- Question 4a1 ---
 
 CREATE MATERIALIZED VIEW IF NOT EXISTS view_movies AS SELECT * FROM Movies;
 CREATE INDEX movie_index ON view_movies(mid);
