@@ -34,6 +34,8 @@ select *
 from highest_num_ratings
 inner join highest_ratings on highest_num_ratings.mid=highest_ratings.mid;
 
+-- The answer is hence no. Which is why we get no results here
+
 --iv
 select *
 from movies
@@ -58,6 +60,8 @@ order by movies.mid asc;
 select *
 from highest_num_ratings
 inner join lowest_ratings on highest_num_ratings.mid=lowest_ratings.mid;
+
+-- Again here the answer is no, which agains shows no results.
 
 --vi
 -- In conclusion, it is not. There are no movies that have both the highest number of ratings and the highest ratings and there are also no movies that have both the highest number of ratings and the lowest ratings. We know this by using an inner join, or in other words revealing what is in the intersection of both sets. In both of these cases, the intersection in empty.
