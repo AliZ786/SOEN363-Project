@@ -12,7 +12,7 @@ mid INT,
 actor_name VARCHAR(50),
 cast_position INT,
 FOREIGN KEY (mid) REFERENCES Movies(mid),
-PRIMARY KEY (mid, name)
+PRIMARY KEY (mid, actor_name)
 );
 
 CREATE TABLE Genres (
