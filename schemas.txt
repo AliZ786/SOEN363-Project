@@ -1,29 +1,40 @@
-create table Movies (
-	mid int,
-	title varchar,
-	year date,
-	rating real,
-	num_ratings int,
-	primary key (mid)
+CREATE TABLE movies (
+mid INT UNIQUE NOT NULL,
+title VARCHAR(250),
+year DATE,
+rating REAL,
+num_ratings INT,
+PRIMARY KEY (mid)
 );
-create table Actors (
-	mid int,
-	name varchar,
-	cast_position int,
-	primary key (mid, name)
+
+CREATE TABLE actors (
+mid INT,
+name VARCHAR(50),
+cast_position INT,
+FOREIGN KEY (mid) REFERENCES movies(mid),
+PRIMARY KEY (mid, name)
 );
-create table Genres (
-	mid int,
-	genre varchar,
-	primary key (mid, genre)
+
+CREATE TABLE genres (
+mid INT,
+genre VARCHAR(50),
+FOREIGN KEY (mid) REFERENCES movies(mid),
+PRIMARY KEY (mid, genre)
 );
-create table Tags (
-	mid int,
-	tid int,
-	primary key (mid, tid)
+
+CREATE TABLE tag_names (
+tid INT UNIQUE NOT NULL,
+tag VARCHAR(50),
+PRIMARY KEY (tid)
 );
-create table Tag_Names (
-	tid int,
-	tag varchar,
-	primary key (tid)
+
+
+CREATE TABLE tags (
+mid INT,
+tid INT,
+FOREIGN KEY (mid) REFERENCES movies(mid),
+FOREIGN KEY (tid) REFERENCES tag_names(tid),
+PRIMARY KEY (mid, tid)
 );
+
+
