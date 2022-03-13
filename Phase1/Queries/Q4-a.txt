@@ -1,0 +1,30 @@
+--- Question 4a ---
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS view_movies AS SELECT * FROM Movies;
+CREATE INDEX movie_index ON view_movies(mid);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS view_actors AS SELECT * FROM Actors;
+CREATE INDEX actor_index ON view_actors(mid, actor_name);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS view_genres AS SELECT * FROM Genres;
+CREATE INDEX genre_index ON view_genres(mid, genre);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS view_tag_names AS SELECT * FROM Tag_Names;
+CREATE INDEX tag_name_index ON view_tag_names(tid);
+
+CREATE MATERIALIZED VIEW IF NOT EXISTS view_tags AS SELECT * FROM Tags;
+CREATE INDEX tag_index ON view_tags(mid, tid);
+
+
+--- QUERY EXECUTION TIMES ---
+
+-- view_movies: 56 ms
+-- movie_index: 52 ms
+-- view_actors : 397 ms
+-- actor_index : 558 ms
+-- view_genres : 54 ms
+-- genre_index : 66 ms
+-- view_tag_names : 65 ms
+-- tag_name_index : 55 ms
+-- view_tags : 80 ms
+-- tag_index : 70 ms
