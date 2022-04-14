@@ -1,17 +1,3 @@
-create table Weather
-(
-    wid INTEGER,
-    stationID CHAR(20),
-    date DATE,
-    precipitation INTEGER,
-    snowfall INTEGER,
-    snow_depth INTEGER,
-    average_temp INTEGER,
-    max_temp INTEGER,
-    min_temp INTEGER,
-    PRIMARY KEY (wid)
-);
-
 create table Cities
 (
     cid INTEGER,
@@ -21,4 +7,26 @@ create table Cities
     population INTEGER,
     stationID CHAR(20),
     PRIMARY KEY (cid)
+);
+
+create table WeatherConditions
+(
+    wid INTEGER,
+    stationID CHAR(20),
+    date DATE,
+    precipitation INTEGER,
+    snowfall INTEGER,
+    snow_depth INTEGER,
+      PRIMARY KEY (wid)
+);
+
+create table Temperature
+(
+    tid INTEGER,
+    stationID CHAR(20),
+    date DATE,
+    average_temp INTEGER,
+    max_temp INTEGER,
+    min_temp INTEGER,
+    PRIMARY KEY (tid)
 );
