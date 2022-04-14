@@ -1,0 +1,24 @@
+create table Weather
+(
+    wid INTEGER,
+    stationID CHAR(20),
+    date DATE,
+    precipitation INTEGER,
+    snowfall INTEGER,
+    snow_depth INTEGER,
+    average_temp INTEGER,
+    max_temp INTEGER,
+    min_temp INTEGER,
+    PRIMARY KEY (wid)
+);
+
+create table Cities
+(
+    cid INTEGER,
+    city CHAR(50),
+    country CHAR(50),
+    capital CHAR(8),
+    population INTEGER,
+    stationID CHAR(20),
+    PRIMARY KEY (cid)
+);
