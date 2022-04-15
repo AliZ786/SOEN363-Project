@@ -30,3 +30,21 @@ create table Temperature
     min_temp INTEGER,
     PRIMARY KEY (tid)
 );
+
+create table City_Weather
+(
+    cid INTEGER,
+    wid INTEGER,
+    FOREIGN KEY (cid) references Cities,
+    FOREIGN KEY (wid) references WeatherConditions,
+    PRIMARY KEY (cid, wid)   
+);
+
+create table City_Temperature
+(
+    cid INTEGER,
+    tid INTEGER,
+    FOREIGN KEY (cid) references Cities,
+    FOREIGN KEY (tid) references Temperature,
+    PRIMARY KEY (cid, tid)   
+);
