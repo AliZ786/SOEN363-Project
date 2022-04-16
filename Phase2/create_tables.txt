@@ -4,7 +4,7 @@ create table Cities
     city CHAR(50),
     country CHAR(50),
     capital CHAR(8),
-    population INTEGER,
+    population DECIMAL,
     stationID CHAR(20),
     PRIMARY KEY (cid)
 );
@@ -14,9 +14,9 @@ create table WeatherConditions
     wid INTEGER,
     stationID CHAR(20),
     date DATE,
-    precipitation INTEGER,
-    snowfall INTEGER,
-    snow_depth INTEGER,
+    precipitation DECIMAL,
+    snowfall DECIMAL,
+    snow_depth DECIMAL,
       PRIMARY KEY (wid)
 );
 
@@ -25,9 +25,9 @@ create table Temperature
     tid INTEGER,
     stationID CHAR(20),
     date DATE,
-    average_temp INTEGER,
-    max_temp INTEGER,
-    min_temp INTEGER,
+    average_temp DECIMAL,
+    max_temp DECIMAL,
+    min_temp DECIMAL,
     PRIMARY KEY (tid)
 );
 
