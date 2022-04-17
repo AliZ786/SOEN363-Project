@@ -1,5 +1,5 @@
 LOAD CSV WITH HEADERS FROM "file:///all_cities.csv" as cities 
-create (c1:City {cid: cities.cid, city: cities.city, capital: cities.capital, population: cities.population, stationID: cities.stationID})
+create (c1:City {cid: cities.cid, city: cities.city, country: cities.country, capital: cities.capital, population: cities.population, stationID: cities.stationID})
 
 :auto USING PERIODIC COMMIT 500 LOAD CSV WITH HEADERS FROM "file:///temperature.csv" as temperature 
 create (t1:Temperature {tid: temperature.tid, stationID: temperature.stationID, date: temperature.Date, average_temp: temperature.average_temp, max_temp: temperature.max_temp, min_temp: temperature.min_temp})
