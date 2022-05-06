@@ -3,10 +3,9 @@
 # Team: Another Day, Another Data #
 
 ## Team Members ##
-<ul>
 
-<li>Mohammad Ali Zahir</li>
-<li>Dionisia Poulios</li>
-<li>Sami Merhi</li>
-<li>Marita Brichan</li>
-</ul>
+
+* Mohammad Ali Zahir - [AliZ786](https://github.com/AliZ786) 
+* Dionisia Poulios - [dionisiapoulios](https://github.com/dionisiapoulios)
+* Sami Merhi - [samimerhi](https://github.com/samimerhi)
+* Marita Brichan - [maritabrichan](https://github.com/maritabrichan)
