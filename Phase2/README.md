@@ -11,6 +11,10 @@
   * **For SQL**: PostgreSQL
   * **For NOSQL**: Neo4J with Cypher
 
+**Software Used**:
+ * **For SQL** : PgAdmin & DataGrip
+ * **For NoSQL**: Neo4J Desktop
+
 **Dataset used**: (https://www.kaggle.com/datasets/abhijitk/ghcn-daily-weather-data-by-city-20152020)
 <br>
    Since the total file size was very large, we added the dataset to the following [Google Drive Link](https://drive.google.com/drive/folders/1lettO8xSJz4LAsgOh9gU81lKtx9DgJKr?usp=sharing)
